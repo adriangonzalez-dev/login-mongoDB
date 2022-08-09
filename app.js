@@ -22,6 +22,7 @@ app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(cors());
 
+//Routes Middlewares
 app.use('/api',userRouter);
 
 app.listen(PORT,()=>{
