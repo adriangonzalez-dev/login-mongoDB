@@ -11,7 +11,7 @@ const UserSchema = Schema({
     },
     active:{
         type:Boolean,
-        default:false
+        default:true
     }
 })
 
