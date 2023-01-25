@@ -1,24 +1,25 @@
-const {check, body} = require('express-validator');
-
-const User = require('../database/models/User')
+const { check, body } = require("express-validator");
+const { userExists } = require("../helpers/dbValidations");
 
 const registerValidator = [
-    check('email')
-                .notEmpty().withMessage('El email es requerido').bail()
-                .isEmail().withMessage('Ingrese un mail válido').bail(),
+  check("email", "El email es requerido y debe ser válido")
+    .notEmpty()
+    .bail()
+    .isEmail()
+    .bail(),
 
-    body('email').custom(async (value)=>{
+  body("email", "El email ya se encuentra registrado")
+    .custom(async (email) => userExists(email))
+    .bail(),
 
-       const user = await User.findOne({ email: value });
-        if (user) {
-            return Promise.reject('El email ya se encuentra registrado');
-        }
-     }).withMessage('El email ya se encuentra registrado').bail(),
-
-    check('password')
-                .notEmpty().withMessage('La contraseña es requerida').bail()
-                .isLength({min: 8, max: 12}).withMessage('La contraseña debe tener como mínimo 8 carácteres').bail(),
-
-]
+  check(
+    "password",
+    "La contraseña es requerida y debe tener entre 8 y 12 caracteres"
+  )
+    .notEmpty()
+    .bail()
+    .isLength({ min: 8, max: 12 })
+    .bail(),
+];
 
 module.exports = registerValidator;
